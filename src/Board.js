@@ -95,7 +95,7 @@
       // return false; // fixme
       //for all of the rows (n) call rowConflicAt
       let hasAnyConflict = false;
-      for (i = 0; i < this.get(0).length; i++) {
+      for (i = 0; i < this.get('n'); i++) {
         if (this.hasRowConflictAt(i)) {
           hasAnyConflict = true;
         }
@@ -111,7 +111,7 @@
     // test if a specific column on this board contains a conflict
     hasColConflictAt: function(colIndex) {
       let columnCount = 0;
-      for (let i = 0; i < this.get(0).length; i++) {
+      for (let i = 0; i < this.get('n'); i++) {
         //this.get(i) = array at i'th index
         if (this.get(i)[colIndex] === 1) {
           columnCount++;
@@ -127,7 +127,7 @@
     // test if any columns on this board contain conflicts
     hasAnyColConflicts: function() {
       let hasAnyConflict = false;
-      for (let i = 0; i < this.get(0).length; i++) {
+      for (let i = 0; i < this.get('n'); i++) {
         if (this.hasColConflictAt(i)) {
           hasAnyConflict = true;
         }
@@ -151,8 +151,7 @@
       let currRowIndex = 0;
 
       //if index is not valid
-      if (majorDiagonalColumnIndexAtFirstRow < 0 ||
-        majorDiagonalColumnIndexAtFirstRow > (this.get(0).length - 1)) {
+      if (majorDiagonalColumnIndexAtFirstRow < 0) {
         //add one to it & move down a row
         //do this until valid
         while (currColumnIndex < 0) {
@@ -162,28 +161,29 @@
         //when index is valid
         //check if value > 0;
       }
-      while (currColumnIndex < this.get(0).length &&
-      currRowIndex < this.get(0).length) {
+
+      //while both indexes are less than N
+      while (currColumnIndex < this.get('n') &&
+      currRowIndex < this.get('n')) {
+        //if this pos is a queen
         if (this.get(currRowIndex)[currColumnIndex] > 0) {
           diagonalCount++;
-          currColumnIndex++;
-          currRowIndex++;
         }
+        currColumnIndex++;
+        currRowIndex++;
+      }
 
-        if (diagonalCount > 1) {
-          return true;
-        } else {
-          return false;
-        }
-
-
+      if (diagonalCount > 1) {
+        return true;
+      } else {
+        return false;
       }
     },
 
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
       let hasAnyConflict = false;
-      let n = this.get(0).length; //finally, right?
+      let n = this.get('n'); //finally, right?
 
       for (let i = (-n + 1); i < n; i++) {
         if (this.hasMajorDiagonalConflictAt(i)) {
@@ -191,7 +191,7 @@
         }
       }
 
-      return hasAnyConflict;
+      return hasAnyConflict;//our above fn is busted (when i test it)
 
     },
 
@@ -202,12 +202,54 @@
     //
     // test if a specific minor diagonal on this board contains a conflict
     hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow) {
-      return false; // fixme
+
+
+      let diagonalCount = 0;
+
+      let currColumnIndex = minorDiagonalColumnIndexAtFirstRow;
+      let currRowIndex = 0;
+      let n = this.get('n');
+
+      //if index is not valid
+      if (minorDiagonalColumnIndexAtFirstRow > (n - 1)) {
+        //subtract one to it & move down a row
+        //do this until valid
+        while (currColumnIndex > (n-1)) {
+          currColumnIndex--;
+          currRowIndex++;
+        }
+      }
+
+      //while on board
+      while (currColumnIndex < this.get('n') &&
+      currRowIndex < this.get('n')) {
+        //if this pos is a queen
+        if (this.get(currRowIndex)[currColumnIndex] > 0) {
+          diagonalCount++;
+        }
+        currColumnIndex--;
+        currRowIndex++;
+      }
+
+      if (diagonalCount > 1) {
+        return true;
+      } else {
+        return false;
+      }
     },
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
-      return false; // fixme
+      let hasAnyConflict = false;
+      let n = this.get('n'); //finally, right?
+
+      for (let i = 0; i < ((2 * n) - 1); i++) {
+        if (this.hasMinorDiagonalConflictAt(i)) {
+          hasAnyConflict = true;
+        }
+      }
+
+      return hasAnyConflict;//our above fn is busted (when i test it)
     }
 
     /*--------------------  End of Helper Functions  ---------------------*/
